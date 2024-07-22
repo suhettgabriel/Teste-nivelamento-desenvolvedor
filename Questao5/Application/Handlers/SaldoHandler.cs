@@ -32,7 +32,8 @@ namespace Questao5.Application.Handlers
                 Success = true,
                 AccountNumber = account.Numero,
                 AccountHolderName = account.Nome,
-                Balance = balance
+                Balance = balance,
+                Timestamp = DateTime.Now.ToString("o")
             };
         }
     }

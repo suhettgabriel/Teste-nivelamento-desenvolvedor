@@ -25,4 +25,11 @@ public class CommandStore : ICommandStore
         var sql = "INSERT INTO IdempotencyKeys (IdempotencyKey, Request, Response) VALUES (@IdempotencyKey, @Request, @Response)";
         await _connection.ExecuteAsync(sql, new { IdempotencyKey = idempotencyKey, Request = request, Response = response });
     }
+
+    public async Task<Movement> GetMovementByIdempotencyKey(string idempotencyKey)
+    {
+        var sql = "SELECT * FROM idempotencia WHERE chave_idempotencia = @IdempotencyKey";
+        var result = await _connection.QueryAsync(sql, new { IdempotencyKey = idempotencyKey });
+        return result.FirstOrDefault();
+    }
 }
