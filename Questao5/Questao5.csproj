@@ -7,6 +7,25 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Infrastructure\Database\CommandStore\Requests\**" />
+	  <Compile Remove="Infrastructure\Database\CommandStore\Responses\**" />
+	  <Compile Remove="Infrastructure\Database\QueryStore\Requests\**" />
+	  <Compile Remove="Infrastructure\Database\QueryStore\Responses\**" />
+	  <Content Remove="Infrastructure\Database\CommandStore\Requests\**" />
+	  <Content Remove="Infrastructure\Database\CommandStore\Responses\**" />
+	  <Content Remove="Infrastructure\Database\QueryStore\Requests\**" />
+	  <Content Remove="Infrastructure\Database\QueryStore\Responses\**" />
+	  <EmbeddedResource Remove="Infrastructure\Database\CommandStore\Requests\**" />
+	  <EmbeddedResource Remove="Infrastructure\Database\CommandStore\Responses\**" />
+	  <EmbeddedResource Remove="Infrastructure\Database\QueryStore\Requests\**" />
+	  <EmbeddedResource Remove="Infrastructure\Database\QueryStore\Responses\**" />
+	  <None Remove="Infrastructure\Database\CommandStore\Requests\**" />
+	  <None Remove="Infrastructure\Database\CommandStore\Responses\**" />
+	  <None Remove="Infrastructure\Database\QueryStore\Requests\**" />
+	  <None Remove="Infrastructure\Database\QueryStore\Responses\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="MediatR" Version="11.0.0" />
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
@@ -40,10 +59,6 @@
 		<Folder Include="Domain\Entities\" />
 		<Folder Include="Domain\Enumerators\" />
 		<Folder Include="Domain\Language\" />
-		<Folder Include="Infrastructure\Database\CommandStore\Requests\" />
-		<Folder Include="Infrastructure\Database\CommandStore\Responses\" />
-		<Folder Include="Infrastructure\Database\QueryStore\Requests\" />
-		<Folder Include="Infrastructure\Database\QueryStore\Responses\" />
 	</ItemGroup>
 
 </Project>
