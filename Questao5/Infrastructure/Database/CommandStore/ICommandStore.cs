@@ -8,5 +8,6 @@ namespace Questao5.Infrastructure.Database.CommandStore
     {
         Task CreateMovement(Movement movement);
         Task SaveIdempotencyKey(string idempotencyKey, MovimentacaoRequest request, MovimentacaoResponse response);
+        Task<Movement> GetMovementByIdempotencyKey(string idempotencyKey);
     }
 }

@@ -1,9 +1,7 @@
-﻿namespace Questao5.Infrastructure.Database.QueryStore
-{
-    using Domain.Entities;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+﻿using Questao5.Domain.Entities;
 
+namespace Questao5.Infrastructure.Database.QueryStore
+{
     public interface IQueryStore
     {
         Task<Account> GetAccountById(string accountId);

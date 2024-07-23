@@ -3,33 +3,35 @@ using Microsoft.Data.Sqlite;
 using Questao5.Application.Commands.Requests;
 using Questao5.Application.Commands.Responses;
 using Questao5.Domain.Entities;
-using Questao5.Infrastructure.Database.CommandStore;
 
-public class CommandStore : ICommandStore
+namespace Questao5.Infrastructure.Database.CommandStore
 {
-    private readonly SqliteConnection _connection;
-
-    public CommandStore(SqliteConnection connection)
+    public class CommandStore : ICommandStore
     {
-        _connection = connection;
-    }
+        private readonly SqliteConnection _connection;
 
-    public async Task CreateMovement(Movement movement)
-    {
-        var sql = "INSERT INTO Movimentos (Idmovimento, Idcontacorrente, Datamovimento, Tipomovimento, Valor) VALUES (@Idmovimento, @Idcontacorrente, @Datamovimento, @Tipomovimento, @Valor)";
-        await _connection.ExecuteAsync(sql, movement);
-    }
+        public CommandStore(SqliteConnection connection)
+        {
+            _connection = connection;
+        }
 
-    public async Task SaveIdempotencyKey(string idempotencyKey, MovimentacaoRequest request, MovimentacaoResponse response)
-    {
-        var sql = "INSERT INTO IdempotencyKeys (IdempotencyKey, Request, Response) VALUES (@IdempotencyKey, @Request, @Response)";
-        await _connection.ExecuteAsync(sql, new { IdempotencyKey = idempotencyKey, Request = request, Response = response });
-    }
+        public async Task CreateMovement(Movement movement)
+        {
+            var sql = "INSERT INTO Movimentos (Idmovimento, Idcontacorrente, Datamovimento, Tipomovimento, Valor) VALUES (@Idmovimento, @Idcontacorrente, @Datamovimento, @Tipomovimento, @Valor)";
+            await _connection.ExecuteAsync(sql, movement);
+        }
 
-    public async Task<Movement> GetMovementByIdempotencyKey(string idempotencyKey)
-    {
-        var sql = "SELECT * FROM idempotencia WHERE chave_idempotencia = @IdempotencyKey";
-        var result = await _connection.QueryAsync(sql, new { IdempotencyKey = idempotencyKey });
-        return result.FirstOrDefault();
+        public async Task SaveIdempotencyKey(string idempotencyKey, MovimentacaoRequest request, MovimentacaoResponse response)
+        {
+            var sql = "INSERT INTO IdempotencyKeys (IdempotencyKey, Request, Response) VALUES (@IdempotencyKey, @Request, @Response)";
+            await _connection.ExecuteAsync(sql, new { IdempotencyKey = idempotencyKey, Request = request, Response = response });
+        }
+
+        public async Task<Movement> GetMovementByIdempotencyKey(string idempotencyKey)
+        {
+            var sql = "SELECT * FROM idempotencia WHERE chave_idempotencia = @IdempotencyKey";
+            var result = await _connection.QueryAsync<Movement>(sql, new { IdempotencyKey = idempotencyKey });
+            return result.FirstOrDefault();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Questao5.Application.Commands.Requests;
 using Questao5.Application.Commands.Responses;
+using Questao5.Domain.Entities;
 using Questao5.Infrastructure.Database.CommandStore;
 using Questao5.Infrastructure.Database.QueryStore;
 using System.Threading;

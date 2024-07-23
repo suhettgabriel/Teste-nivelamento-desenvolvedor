@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<OutputType>Exe</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
+		<StartupObject>Questao5.Program</StartupObject>
+		<OutputType>Exe</OutputType>
 		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>

@@ -27,5 +27,4 @@ namespace Questao5.Infrastructure.Services.Controllers
             return BadRequest(response);
         }
     }
-
 }
