@@ -4,8 +4,6 @@ using Questao5.Application.Commands.Responses;
 using Questao5.Domain.Entities;
 using Questao5.Infrastructure.Database.CommandStore;
 using Questao5.Infrastructure.Database.QueryStore;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Questao5.Application.Handlers
 {
@@ -44,7 +42,7 @@ public async Task<MovimentacaoResponse> Handle(MovimentacaoRequest request, Canc
     {
         Idmovimento = newMovementId,
         Idcontacorrente = request.AccountId,
-        Datamovimento = DateTime.Now, // Utilize DateTime para maior precisão
+        Datamovimento = DateTime.Now,
         Tipomovimento = request.MovementType,
         Valor = request.Amount
     };

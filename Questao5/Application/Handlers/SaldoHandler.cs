@@ -1,10 +1,11 @@
-﻿using Questao5.Application.Queries.Requests;
+﻿using MediatR;
+using Questao5.Application.Queries.Requests;
 using Questao5.Application.Queries.Responses;
 using Questao5.Infrastructure.Database.QueryStore;
 
 namespace Questao5.Application.Handlers
 {
-    public class SaldoHandler
+    public class SaldoHandler : IRequestHandler<SaldoRequest, SaldoResponse>
     {
         private readonly IQueryStore _queryStore;
 

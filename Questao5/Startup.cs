@@ -1,85 +1,90 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Questao5.Application.Commands.Requests;
-using Questao5.Application.Commands.Responses;
-using Questao5.Domain.Entities;
+﻿using Microsoft.Data.Sqlite;
+using Questao5.Infrastructure.Sqlite;
 using Questao5.Infrastructure.Database.CommandStore;
 using Questao5.Infrastructure.Database.QueryStore;
-using Questao5.Infrastructure.Sqlite;
-using System.Data;
+using MediatR;
 
-public class Startup
+namespace Questao5
 {
-    public IConfiguration Configuration { get; }
-
-    public Startup(IConfiguration configuration)
+    public class Startup
     {
-        Configuration = configuration;
-    }
+        public IConfiguration Configuration { get; }
 
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddControllers();
-        services.AddMediatR(typeof(Startup).Assembly);
-        services.AddSwaggerGen();
-
-        services.AddSingleton<DatabaseConfig>(sp =>
+        public Startup(IConfiguration configuration)
         {
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            return new DatabaseConfig { Name = connectionString };
-        });
+            Configuration = configuration;
+        }
 
-        services.AddScoped<SqliteConnection>(sp =>
+        public void ConfigureServices(IServiceCollection services)
         {
-            var config = sp.GetRequiredService<DatabaseConfig>();
-            var connection = new SqliteConnection(config.Name);
-            connection.Open(); 
-            return connection;
-        });
+            services.AddControllers();
+            services.AddMediatR(typeof(Startup).Assembly);
+            services.AddSwaggerGen();
 
-        services.AddScoped<IDatabaseBootstrap, DatabaseBootstrap>();
-        services.AddScoped<ICommandStore, CommandStore>();
-        services.AddScoped<IQueryStore, QueryStore>();
-
-        services.AddScoped(provider =>
-        {
-            var dbBootstrap = provider.GetRequiredService<IDatabaseBootstrap>();
-            dbBootstrap.Setup();
-            return dbBootstrap;
-        });
-    }
-
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        if (env.IsDevelopment())
-        {
-            app.UseDeveloperExceptionPage();
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
+            services.AddSingleton(sp =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = string.Empty; 
+                var connectionString = Configuration.GetConnectionString("DefaultConnection");
+                return new DatabaseConfig { Name = connectionString };
+            });
+
+            services.AddScoped(sp =>
+            {
+                var config = sp.GetRequiredService<DatabaseConfig>();
+                var connection = new SqliteConnection(config.Name);
+                connection.Open();
+                return connection;
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+
+            services.AddScoped<IDatabaseBootstrap, DatabaseBootstrap>();
+            services.AddScoped<ICommandStore, CommandStore>();
+            services.AddScoped<IQueryStore, QueryStore>();
+
+            services.AddScoped(provider =>
+            {
+                var dbBootstrap = provider.GetRequiredService<IDatabaseBootstrap>();
+                dbBootstrap.Setup();
+                return dbBootstrap;
             });
         }
-        else
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseExceptionHandler("/Home/Error");
-            app.UseHsts();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                    c.RoutePrefix = string.Empty;
+                });
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseCors("AllowAll");
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
-
-        app.UseHttpsRedirection();
-        app.UseStaticFiles();
-        app.UseRouting();
-        app.UseAuthorization();
-
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
     }
 }
